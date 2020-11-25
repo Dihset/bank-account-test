@@ -8,6 +8,7 @@ from tortoise import Tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.transactions import atomic
 
+from .errors import AccountDoesNotExist, AccountNegativeBalance
 from .models import Account
 
 AccountPyDantic = pydantic_model_creator(Account)
@@ -17,22 +18,26 @@ class PostgresAccountRepository:
     
     @classmethod
     async def get_by_uuid(cls, uuid: Union[str, uuid4]) -> AccountPyDantic:
-        account = await Account.get(uuid=uuid, is_open=True)
+        account = await Account.get_or_none(uuid=uuid, is_open=True)
+        if not account:
+            raise AccountDoesNotExist
         return await AccountPyDantic.from_tortoise_orm(account)
     
     @classmethod
     async def substract_balance(cls, uuid: Union[str, uuid4], substraction: int) -> AccountPyDantic:
         account = await Account.get(uuid=uuid, is_open=True)
+        if not account:
+            raise AccountDoesNotExist
         result = account.balance - account.holds - substraction
         if result < 0:
-            raise Exception()
+            raise AccountNegativeBalance
         account.holds += substraction
         await account.save()
         return await AccountPyDantic.from_tortoise_orm(account)
 
     @classmethod
     async def add_balance(cls, uuid: Union[str, uuid4], amount: int) -> AccountPyDantic:
-        account = await Account.get(uuid=uuid, is_open=True)
+        account = await Account.get_or_none(uuid=uuid, is_open=True)
         account.balance += amount
         await account.save()
         return await AccountPyDantic.from_tortoise_orm(account)
