@@ -1,0 +1,29 @@
+version: "3.5"
+
+
+services:
+  #================================
+  #      POSTGRESQL DATABASE
+  #================================
+  bank-account-postgresql:
+    container_name: bank-account-postgresql
+    image: postgres:12-alpine
+    hostname: bank-account-postgresql
+    volumes:
+      - ../.data/bank-account-postgresql:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=bank-account
+    networks:
+      - bank-account-network
+    restart: always  
+
+
+#================================
+#         NETWORK
+#================================
+networks:
+  bank-account-network:
+    external:
+      name: bank-account-network

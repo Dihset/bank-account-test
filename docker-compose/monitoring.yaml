@@ -1,0 +1,32 @@
+version: "3.5"
+
+
+services:
+  #================================
+  #    POSTGRESQL DATABASE GUI
+  #================================
+  bank-account-postgresql-gui:
+    container_name: bank-account-postgresql-gui
+    image: dpage/pgadmin4
+    hostname: bank-account-postgresql-gui
+    ports:
+      - 5050:80
+    volumes:
+       - ../.data/pgadmin:/root/.pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    depends_on:
+      - bank-account-postgresql
+    networks:
+      - bank-account-network
+    restart: always
+
+
+#================================
+#         NETWORK
+#================================
+networks:
+  bank-account-network:
+    external:
+      name: bank-account-network
