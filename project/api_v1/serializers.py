@@ -1,5 +1,6 @@
-from pydantic import BaseModel, validator, ValidationError
 from uuid import UUID
+
+from pydantic import BaseModel, ValidationError, validator
 
 
 def not_negative(value) -> int:

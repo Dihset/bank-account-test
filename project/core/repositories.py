@@ -38,6 +38,8 @@ class PostgresAccountRepository:
     @classmethod
     async def add_balance(cls, uuid: Union[str, uuid4], amount: int) -> AccountPyDantic:
         account = await Account.get_or_none(uuid=uuid, is_open=True)
+        if not account:
+            raise AccountDoesNotExist
         account.balance += amount
         await account.save()
         return await AccountPyDantic.from_tortoise_orm(account)
