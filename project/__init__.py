@@ -1,1 +1,1 @@
-from .app import init_app
+from .app import init_sceduler_app, init_web_app
