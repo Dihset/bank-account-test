@@ -6,6 +6,7 @@ services:
   #================================
   sherlock-nginx:
     image: nginx:stable-alpine
+    container_name: bank-account-nginx
     volumes:
       - ../nginx:/etc/nginx/conf.d
       - ../.data/nginx:/data
@@ -14,6 +15,8 @@ services:
       - 443:443
     networks:
       - bank-account-network
+    depends_on:
+      - web
     restart: always
 
   #================================
@@ -25,6 +28,8 @@ services:
     command: ./bootstrap_web.sh
     networks:
       - bank-account-network
+    depends_on:
+      - bank-account-postgresql
     restart: always
   
   #================================
@@ -32,9 +37,12 @@ services:
   #================================
   scheduler:
     build: ..
+    container_name: bank-account-scheduler
     command: venv/bin/python run_scheduler.py
     networks:
       - bank-account-network
+    depends_on:
+      - bank-account-postgresql
     restart: always
 
 #================================

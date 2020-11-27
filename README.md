@@ -1,5 +1,25 @@
 # bank-account-test
 
+## Запустить
+
+
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+или нормально
+
+```bash
+make up-all
+```
+
+## Остановить
+
+```bash
+make stop-all
+```
+
 ## Отвечая на вопросы
 1. Почему в repositories.PostgresAccountRepository.clear_holds используется sql, а не возможности ORM? Одним запросом сделать проще чем запрашивать через select_for_update и изменять внутри python.
 2. Почему в repositories.PostgresAccountRepository.add_balance используется ORM а не sql? Дабы показать возможности ORM))
