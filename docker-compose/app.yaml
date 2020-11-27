@@ -1,0 +1,46 @@
+version: "3.5"
+   
+services:
+  #================================
+  #         WEB SERVER
+  #================================
+  sherlock-nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - ../nginx:/etc/nginx/conf.d
+      - ../.data/nginx:/data
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - bank-account-network
+    restart: always
+
+  #================================
+  #        WEB APPLICATION
+  #================================
+  web:
+    build: ..
+    container_name: bank-account-web
+    command: ./bootstrap_web.sh
+    networks:
+      - bank-account-network
+    restart: always
+  
+  #================================
+  #     SCHEDULER APPLICATION
+  #================================
+  scheduler:
+    build: ..
+    command: venv/bin/python run_scheduler.py
+    networks:
+      - bank-account-network
+    restart: always
+
+#================================
+#         NETWORK
+#================================
+networks:
+  bank-account-network:
+    external:
+      name: bank-account-network

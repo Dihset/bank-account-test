@@ -5,3 +5,5 @@ tortoise-orm==0.16.18
 asyncpg==0.21.0
 pydantic==1.7.2
 APScheduler==3.6.3
+uvloop==0.14.0
+httptools==0.1.1
